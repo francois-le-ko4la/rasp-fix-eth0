@@ -5,22 +5,57 @@ This script was created to address an issue where my network card defaulted to 1
 I did not want to change the network renderer.
 
 ## 📋 Features
+### Variables
 
-  - Existing Settings Check:
-    The script checks if the eth0 interface is already configured with the following parameters:
-    - Speed: 1000Mb/s
-    - Duplex: Full
-  - If the parameters are correct, the script exits without making any changes.
-  - Else:
-    - Disable Energy-Efficient Ethernet (EEE): To avoid potential performance issues, EEE is disabled.
-    - Network Configuration:
-      If necessary, the script sets the following:
-          Speed to 1000Mb/s
-          Duplex mode to Full
-          Auto-negotiation to On
-  
-    - Logging:
-    Actions taken by the script are logged to the system journal using logger for easy monitoring.
+This script allows for flexible network configuration using environment variables:
+- TARGET_IFACE: The target network interface to configure (default is eth0).
+- TARGET_SPEED: The network speed to set in Mbps. Accepted values include 100, 1000, etc. The default value is 100.
+- TARGET_DUPLEX: The duplex mode for the connection. Possible values are full (default) or half.
+- TARGET_AUTONEG: Enable or disable autonegotiation. Possible values are on (default) or off.
+
+You can set these environment variables in the command line before running the script, or define them in an environment file if your system uses one.
+- Example 1: Set variables via command line
+  ```ssh
+  TARGET_IFACE="eth1" TARGET_SPEED="1000" TARGET_DUPLEX="full" TARGET_AUTONEG="on" ./configure-network.sh
+  ```
+
+- Example 2: Add variables to an environment file
+  Create a file named .env:
+  ```ssh
+  TARGET_IFACE="eth0"
+  TARGET_SPEED="100"
+  TARGET_DUPLEX="full"
+  TARGET_AUTONEG="off"
+  ```
+  Then, run the script after sourcing the variables:
+  ```ssh
+  source .env
+  ./configure-network.sh
+  ```
+
+### Default Behavior
+
+If no environment variables are set, the script will use the following default values:
+- Interface: eth0
+- Speed: 1000 Mbps
+- Duplex: Full
+- Autonegotiation: On
+
+This ensures that the script will work without prior configuration, while still allowing for advanced customization if needed.
+
+- Existing Settings Check
+- If the parameters are correct, the script exits without making any changes.
+- Else:
+  - Disable Energy-Efficient Ethernet (EEE): To avoid potential performance issues, EEE is disabled.
+  - Network Configuration:
+    If necessary, the script sets the following:
+        Speed to 1000Mb/s
+        Duplex mode to Full
+        Auto-negotiation to On
+
+  - Logging:
+  Actions taken by the script are logged to the system journal using logger for easy monitoring.
+
 
 ## ⚠️ Disclaimer
 
